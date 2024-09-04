@@ -12,6 +12,7 @@ const Homepage = ({ user }) => {
     <div>
      
       <MovieCarousel />
+    
       <Routes>
         <Route path="/" element={<Movies />} />
         <Route path="/categories/:category" element={<MovieCategory />} />
