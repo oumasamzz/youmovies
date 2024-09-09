@@ -1,8 +1,6 @@
-// MovieCategory.js
-
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { db } from '../firebase'; // Adjust the path as necessary
+import { db } from '../firebase'; 
 import { collection, getDocs } from 'firebase/firestore';
 
 const MovieCategory = () => {
@@ -49,12 +47,12 @@ const MovieCategory = () => {
   }
 
   return (
-    <div>
+    <div style={{ backgroundColor: 'black' }}>
       <h1>{category} Movies</h1>
       {movies.length === 0 ? (
         <p>No movies found in this category.</p>
       ) : (
-        <div className="flex overflow-x-auto pb-4 whitespace-nowrap">
+        <div className="grid grid-cols-4 overflow-x-auto pb-4 whitespace-nowrap">
           {movies.map((movie) => {
             const videoId = movie.url.split('v=')[1]; // Adjust as necessary
             return (
