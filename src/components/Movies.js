@@ -77,7 +77,7 @@ const Movies = () => {
 
   return (
     <div className="p-4 bg-black">
-      {['Action', 'Comedy', 'Romance', 'Drama', 'Thriller', 'Sci-fi', 'Anime', 'Kung-fu'].map((category) => (
+      {['Action', 'Comedy', 'Romance', 'Drama', 'Thriller', 'Sci-fi', 'Anime', 'Kung-fu', 'Short-Films'].map((category) => (
         <div key={category} className="mb-8 relative">
           <h2 className="text-xl font-bold mb-4 text-white">{category}</h2>
           <div className="relative flex items-center">
