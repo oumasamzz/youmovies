@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { db } from '../firebase'; // Adjust the path as needed
+import { db } from '../firebase'; 
 import { collection, getDocs } from 'firebase/firestore';
 
 const Movies = () => {
@@ -43,7 +43,7 @@ const Movies = () => {
     return movies
       .filter((movie) => movie.category === category)
       .map((movie) => {
-        const videoId = movie.url.split('v=')[1]; // Adjust as necessary
+        const videoId = movie.url.split('v=')[1]; 
 
         return (
           <div key={movie.id} className="w-48 sm:w-60 md:w-72 lg:w-80 xl:w-96 p-2 flex-shrink-0 bg-black">
@@ -77,31 +77,66 @@ const Movies = () => {
 
   return (
     <div className="p-4 bg-black">
-      {['Action', 'Comedy', 'Romance', 'Drama', 'Thriller', 'Sci-fi', 'Anime', 'Kung-fu', 'Short-Films'].map((category) => (
-        <div key={category} className="mb-8 relative">
-          <h2 className="text-xl font-bold mb-4 text-white">{category}</h2>
-          <div className="relative flex items-center">
-            <button
-              onClick={() => scroll(category, 'left')}
-              className="absolute left-0 z-10 bg-gray-600 text-white p-4 rounded-full hover:bg-gray-500 transition-all duration-300 ease-in-out shadow-lg"
-            >
-              &larr;
-            </button>
-            <div
-              ref={(el) => (scrollContainers.current[category] = el)}
-              className="flex overflow-x-auto pb-4 whitespace-nowrap scroll-smooth"
-            >
-              {renderMoviesByCategory(category)}
-            </div>
-            <button
-              onClick={() => scroll(category, 'right')}
-              className="absolute right-0 z-10 bg-gray-600 text-white p-4 rounded-full hover:bg-gray-500 transition-all duration-300 ease-in-out shadow-lg"
-            >
-              &rarr;
-            </button>
-          </div>
-        </div>
-      ))}
+      <h2 className="text-xl font-bold mb-4 text-white">Latest Movies</h2>
+      <div className="flex overflow-x-auto pb-4 whitespace-nowrap">
+        {renderMoviesByCategory('New')}
+      </div>
+
+      <h2 className="text-xl font-bold mt-8 mb-4 text-white">Recently Added</h2>
+      <div className="flex overflow-x-auto pb-4 whitespace-nowrap">
+        {renderMoviesByCategory('Newish')}
+      </div>
+
+      <h2 className="text-xl font-bold mt-8 mb-4 text-white">Recommended</h2>
+      <div className="flex overflow-x-auto pb-4 whitespace-nowrap">
+        {renderMoviesByCategory('Action')}
+      </div>
+
+      <h2 className="text-xl font-bold mt-8 mb-4 text-white">Most Watched</h2>
+      <div className="flex overflow-x-auto pb-4 whitespace-nowrap">
+        {renderMoviesByCategory('Cartoon')}
+      </div>
+
+
+      <h2 className="text-xl font-bold mt-8 mb-4 text-white">Action</h2>
+      <div className="flex overflow-x-auto pb-4 whitespace-nowrap">
+        {renderMoviesByCategory('Action')}
+      </div>
+
+      <h2 className="text-xl font-bold mt-8 mb-4 text-white">Adventure</h2>
+      <div className="flex overflow-x-auto pb-4 whitespace-nowrap">
+        {renderMoviesByCategory('Adventure')}
+      </div>
+
+      <h2 className="text-xl font-bold mt-8 mb-4 text-white">Romance</h2>
+      <div className="flex overflow-x-auto pb-4 whitespace-nowrap">
+        {renderMoviesByCategory('Romance')}
+      </div>
+
+      <h2 className="text-xl font-bold mt-8 mb-4 text-white">Drama</h2>
+      <div className="flex overflow-x-auto pb-4 whitespace-nowrap">
+        {renderMoviesByCategory('Drama')}
+      </div>
+       <h2 className="text-xl font-bold mt-8 mb-4 text-white">Thriller</h2>
+      <div className="flex overflow-x-auto pb-4 whitespace-nowrap">
+        {renderMoviesByCategory('Thriller')}
+      </div>
+       <h2 className="text-xl font-bold mt-8 mb-4 text-white">Science Fiction</h2>
+      <div className="flex overflow-x-auto pb-4 whitespace-nowrap">
+        {renderMoviesByCategory('Sci-fi')}
+      </div>
+       <h2 className="text-xl font-bold mt-8 mb-4 text-white">Comedy</h2>
+      <div className="flex overflow-x-auto pb-4 whitespace-nowrap">
+        {renderMoviesByCategory('Comedy')}
+      </div>
+      <h2 className="text-xl font-bold mt-8 mb-4 text-white">Anime</h2>
+      <div className="flex overflow-x-auto pb-4 whitespace-nowrap">
+        {renderMoviesByCategory('Anime')}
+      </div>
+       <h2 className="text-xl font-bold mt-8 mb-4 text-white">Kung-Fu</h2>
+      <div className="flex overflow-x-auto pb-4 whitespace-nowrap">
+        {renderMoviesByCategory('Kung-fu')}
+      </div>
     </div>
   );
 };

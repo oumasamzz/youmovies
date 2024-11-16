@@ -3,25 +3,28 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '../firebase';
 import { signOut } from 'firebase/auth';
+import Search from './Search'; // Import the Search component
 import Logo from '../images/youmovieslogo-removebg.png';
 
 const Header = () => {
-  const [user] = useAuthState(auth); // Get the current user
+  const [user] = useAuthState(auth);
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    console.log('User object:', user); // Debugging line
+    console.log('User object:', user);
   }, [user]);
 
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      navigate('/login'); // Redirect to login page after signing out
+      navigate('/login');
     } catch (error) {
       console.error('Error signing out:', error.message);
-      // Optionally show a user-friendly message here
     }
   };
 
@@ -42,17 +45,21 @@ const Header = () => {
     <header className="flex justify-between items-center p-4 bg-gray-900 text-white h-20 w-full opacity-100">
       <div>
         <Link to="/movies">
-          <img
-            src={Logo}
-            alt="logo"
-            className="object-fill h-20 w-25"
-          />
+          <img src={Logo} alt="logo" className="object-fill h-20 w-25" />
         </Link>
       </div>
 
+      <Search 
+        searchTerm={searchTerm} 
+        setSearchTerm={setSearchTerm} 
+        loading={loading} 
+        setLoading={setLoading} 
+        setError={setError} 
+        navigate={navigate} 
+      />
+
       <nav className="hidden md:flex space-x-6">
         <Link to="/" className="hover:text-gray-400">Movies</Link>
-       
         <Link to="/tvshows" className="hover:text-gray-400">TV Shows</Link>
         <div className="relative group">
           <button className="hover:text-gray-400">Categories</button>
@@ -63,7 +70,6 @@ const Header = () => {
             <Link to="/categories/comedy" className="block px-4 py-2 hover:bg-gray-700 rounded">Comedy</Link>
             <Link to="/categories/anime" className="block px-4 py-2 hover:bg-gray-700 rounded">Anime</Link>
             <Link to="/categories/kung-fu" className="block px-4 py-2 hover:bg-gray-700 rounded">Kung-fu</Link>
-            {/* Add more categories here */}
           </div>
         </div>
         <Link to="/favourites" className="hover:text-gray-400">Favourites</Link>

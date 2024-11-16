@@ -59,6 +59,7 @@ const Headerz = () => {
        <div className="relative group">
         <button className="hover:text-gray-400">Categories</button>
         <div className="absolute hidden group-hover:block bg-gray-800 rounded-lg p-2 space-y-2">
+        <Link to="/categories/action" className="block px-4 py-2 hover:bg-gray-700 rounded">Adventure</Link>
           <Link to="/categories/action" className="block px-4 py-2 hover:bg-gray-700 rounded">Action</Link>
           <Link to="/categories/romance" className="block px-4 py-2 hover:bg-gray-700 rounded">Romance</Link>
           <Link to="/categories/thriller" className="block px-4 py-2 hover:bg-gray-700 rounded">Thriller</Link>
