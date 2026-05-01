@@ -1,5 +1,4 @@
 import React from 'react';
-import Header from './Header';
 import MovieCarousel from './MovieCarousel';
 import Movies from './Movies';
 import Profile from './Profile';

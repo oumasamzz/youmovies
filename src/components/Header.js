@@ -56,6 +56,7 @@ const Header = () => {
         setLoading={setLoading} 
         setError={setError} 
         navigate={navigate} 
+        erro={error}
       />
 
       <nav className="hidden md:flex space-x-6">
