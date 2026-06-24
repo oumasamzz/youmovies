@@ -55,7 +55,7 @@ const Headerz = () => {
       <nav className="hidden md:flex space-x-6">
         <Link to="/" className="hover:text-gray-400">Home</Link>
         <Link to="/movies" className="hover:text-gray-400">Movies</Link>
-        <Link to="/tvshows" className="hover:text-gray-400">TV Shows</Link>
+        <Link to="/tvshows" className="hover:text-gray-400">TV Showz</Link>
        <div className="relative group">
         <button className="hover:text-gray-400">Categories</button>
         <div className="absolute hidden group-hover:block bg-gray-800 rounded-lg p-2 space-y-2">
