@@ -4,6 +4,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import Auth from './components/Auth';
 import Homepage from './components/Homepage';  // Import the Homepage component
 import Player from './components/Player';
+import Results from './components/SearchResult'; // Import the Results component
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -28,6 +29,9 @@ const App = () => {
 
         {/* Handle the player route separately */}
         <Route path="/player/:videoId" element={user ? <Player /> : <Navigate to="/login" />} />
+
+        {/* New results page for search functionality */}
+        <Route path="/results" element={user ? <Results /> : <Navigate to="/login" />} />
 
         {/* Redirect any unknown paths to homepage or login */}
         <Route path="*" element={user ? <Navigate to="/" /> : <Navigate to="/login" />} />

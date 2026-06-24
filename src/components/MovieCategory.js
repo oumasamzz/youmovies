@@ -47,16 +47,16 @@ const MovieCategory = () => {
   }
 
   return (
-    <div style={{ backgroundColor: 'black' }}>
+    <div>
       <h1>{category} Movies</h1>
       {movies.length === 0 ? (
         <p>No movies found in this category.</p>
       ) : (
-        <div className="grid grid-cols-4 overflow-x-auto pb-4 whitespace-nowrap">
+        <div className="flex overflow-x-auto pb-4 whitespace-nowrap">
           {movies.map((movie) => {
             const videoId = movie.url.split('v=')[1]; // Adjust as necessary
             return (
-              <div key={movie.id} className="w-48 sm:w-60 md:w-72 lg:w-80 xl:w-96 p-2 flex-shrink-0">
+              <div key={movie.id} className="w-32 sm:w-60 md:w-72 lg:w-80 xl:w-96 p-2 flex-shrink-0">
                 <Link to={`/player/${videoId}`} className="block relative">
                   <div className="relative w-[70%] h-full pb-[100%]">
                     <img
