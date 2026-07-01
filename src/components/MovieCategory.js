@@ -1,35 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { db } from '../firebase'; 
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, where, orderBy, limit } from 'firebase/firestore';
 
 const MovieCategory = () => {
-  const { category } = useParams(); // Get the category from the URL
+  const { category } = useParams(); 
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchMovies = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        console.log('Fetching movies for category:', category); // Debug log
-        const moviesCollection = collection(db, 'movies');
-        const movieSnapshot = await getDocs(moviesCollection);
-        const movieList = movieSnapshot.docs.map(doc => ({
+        const moviesRef = collection(db, 'movies');
+        let q;
+
+        // Using your exact field name 'time' from your sample document
+        if (category.toLowerCase() === 'latest') {
+          q = query(moviesRef, orderBy('time', 'desc'), limit(20));
+        } else {
+          q = query(moviesRef, where('category', '==', category));
+        }
+
+        const snapshot = await getDocs(q);
+        const movieList = snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data(),
         }));
 
-        console.log('Movies fetched:', movieList); // Debug log
-
-        // Filter movies by category
-        const filteredMovies = movieList.filter(movie => movie.category && movie.category.toLowerCase() === category.toLowerCase());
-        console.log('Filtered movies:', filteredMovies); // Debug log
-
-        setMovies(filteredMovies);
+        setMovies(movieList);
       } catch (error) {
         console.error('Error fetching movies:', error);
-        setError('Failed to load movies');
+        // This often happens if an index is missing. Check the console!
+        setError('Failed to load movies. Make sure to click the link in the console to build your Firestore index.');
       } finally {
         setLoading(false);
       }
@@ -38,43 +43,35 @@ const MovieCategory = () => {
     fetchMovies();
   }, [category]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  if (loading) return <div className="text-white p-10">Loading movies...</div>;
+  if (error) return <div className="text-red-500 p-10">{error}</div>;
 
   return (
-    <div>
-      <h1>{category} Movies</h1>
+    <div className="p-6 md:p-12 bg-[#141414] min-h-screen">
+      <h1 className="text-3xl font-bold text-white mb-8 capitalize">{category} Movies</h1>
+      
       {movies.length === 0 ? (
-        <p>No movies found in this category.</p>
+        <p className="text-zinc-400">No movies found in this category.</p>
       ) : (
-        <div className="flex overflow-x-auto pb-4 whitespace-nowrap">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
           {movies.map((movie) => {
-            const videoId = movie.url.split('v=')[1]; // Adjust as necessary
+            // Your sample URL: "https://www.youtube.com/watch?v=aPeUeBb669s"
+            const videoId = movie.url?.split('v=')[1]?.split('&')[0];
+            
             return (
-              <div key={movie.id} className="w-32 sm:w-60 md:w-72 lg:w-80 xl:w-96 p-2 flex-shrink-0">
-                <Link to={`/player/${videoId}`} className="block relative">
-                  <div className="relative w-[70%] h-full pb-[100%]">
+              <div key={movie.id} className="bg-[#1f1f1f] rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300">
+                <Link to={`/player/${videoId}`} className="block">
+                  <div className="relative pt-[56.25%]">
                     <img
                       src={movie.thumbnail}
                       alt={movie.title}
-                      className="absolute inset-0 w-full h-full object-cover rounded-lg shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105"
+                      className="absolute inset-0 w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 ease-in-out">
-                      <svg
-                        className="w-20 h-20 text-red-500 bg-white p-2 rounded-full shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-125"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M10 8l6 4-6 4V8z" />
-                      </svg>
-                    </div>
                   </div>
-                  <h3 className="text-sm mt-2 text-center text-black font-semibold">{movie.title}</h3>
+                  <div className="p-4">
+                    <h3 className="text-white font-semibold truncate">{movie.title}</h3>
+                    <p className="text-zinc-400 text-xs mt-1">{movie.category}</p>
+                  </div>
                 </Link>
               </div>
             );

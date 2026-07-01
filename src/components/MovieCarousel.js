@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import Header from './Header';
+
 
 const MovieCarousel = () => {
   const [carouselItems, setCarouselItems] = useState([]);
@@ -26,9 +26,7 @@ const MovieCarousel = () => {
   return (
     <div className="relative w-full bg-[#141414]">
       {/* Header Container */}
-      <div className="absolute top-0 left-0 w-full z-50">
-        <Header />
-      </div>
+      
 
       {/* Responsive height mapping for the entire carousel container. 
         It scales from 60vh on phones up to 85vh on 4K desktops for a cinematic feel.

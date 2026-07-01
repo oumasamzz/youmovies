@@ -4,7 +4,7 @@ import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
 
 const CATEGORIES = [
-  { id: 'New', title: 'Latest Movies' },
+  { id: 'Latest_Movies', title: 'Latest Movies' },
   { id: 'Newish', title: 'Recently Added' },
   { id: 'Action', title: 'Action' },
   { id: 'Cartoon', title: 'Most Watched' }, 

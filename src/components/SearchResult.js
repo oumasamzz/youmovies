@@ -1,48 +1,76 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '../firebase';
 
 const SearchResult = () => {
   const location = useLocation();
-  const { results } = location.state || { results: [] }; // Get results from state
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  // Get search term from navigation state
+  const searchTerm = location.state?.searchTerm || '';
 
-  const renderMovies = () => {
-    return results.map((movie) => {
-      const videoId = movie.url.split('v=')[1]; 
+  useEffect(() => {
+    const fetchResults = async () => {
+      setLoading(true);
+      try {
+        if (!searchTerm) return;
 
-      return (
-        <div key={movie.id} className="w-48 sm:w-60 md:w-72 lg:w-80 xl:w-96 p-2 flex-shrink-0 bg-black">
-          <Link to={`/player/${videoId}`} className="block relative">
-            <div className="relative w-[70%] h-full pb-[100%]">
-              <img
-                src={movie.thumbnail}
-                alt={movie.title}
-                className="absolute inset-0 w-full h-full object-cover rounded-lg shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105"
-              />
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 ease-in-out">
-                <svg
-                  className="w-20 h-20 text-red-500 bg-white p-2 rounded-full shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-125"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M10 8l6 4-6 4V8z" />
-                </svg>
-              </div>
-            </div>
-            <h3 className="ml-2 text-sm mt-2 text-left text-white font-semibold">{movie.title}</h3>
-          </Link>
-        </div>
-      );
-    });
+        const moviesRef = collection(db, 'movies');
+        
+        // IMPORTANT: Ensure your Firestore documents have a 'titleLower' field.
+        // If they don't, change 'titleLower' to 'title' below.
+        const q = query(
+          moviesRef, 
+          where('titleLower', '>=', searchTerm), 
+          where('titleLower', '<=', searchTerm + '\uf8ff')
+        );
+
+        const snapshot = await getDocs(q);
+        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setResults(data);
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchResults();
+  }, [searchTerm]);
+
+  const getYouTubeId = (url) => {
+    if (!url) return '';
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : '';
   };
 
+  if (loading) return <div className="p-10 text-white">Searching...</div>;
+
   return (
-    <div className="p-4 bg-black text-white">
-      <h1 className="text-2xl mb-4">Search Results</h1>
+    <div className="p-4 bg-black text-white min-h-screen">
+      <h1 className="text-2xl mb-6">Results for "{searchTerm}"</h1>
+      
       {results.length === 0 ? (
-        <p>No movies found.</p>
+        <p>No movies found matching "{searchTerm}".</p>
       ) : (
-        <div className="grid grid-cols-4 pb-4 whitespace-nowrap">
-          {renderMovies()}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+          {results.map((movie) => {
+            const videoId = getYouTubeId(movie.url);
+            return (
+              <div key={movie.id} className="bg-[#141414] rounded-lg overflow-hidden transition-transform hover:scale-105">
+                <Link to={`/player/${videoId}`}>
+                  <img src={movie.thumbnail} alt={movie.title} className="w-full h-40 object-cover" />
+                  <div className="p-3">
+                    <h3 className="text-sm font-semibold truncate">{movie.title}</h3>
+                    <p className="text-xs text-zinc-400 mt-1">{movie.category}</p>
+                  </div>
+                </Link>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
@@ -50,4 +78,3 @@ const SearchResult = () => {
 };
 
 export default SearchResult;
-
